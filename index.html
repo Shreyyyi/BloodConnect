@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BloodConnect - Emergency Blood Donation Platform</title>
+  <meta name="description" content="BloodConnect connects donors, patients, hospitals, and camp organizers in real time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="BloodConnect home">
+        <span class="brand-mark" aria-hidden="true">B+</span>
+        <span>BloodConnect</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#find-donors">Find Donors</a>
+        <a href="#camps">Donation Camps</a>
+        <a href="#sos">SOS Emergency</a>
+        <a href="#dashboards">Dashboards</a>
+        <a href="#contact">Contact</a>
+        <a href="#faqs">FAQs</a>
+      </div>
+      <div class="nav-actions">
+        <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+        <a class="button button-emergency" href="#sos">Emergency SOS</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero section" id="home">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">Real-time blood donation and emergency response</p>
+        <h1>Every Drop Counts. Every Donor Saves Lives.</h1>
+        <p class="hero-text">Connect verified donors, patients, hospitals, and camp organizers through a fast, accessible, location-aware healthcare network.</p>
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="button button-primary" href="#find-donors">Find Blood Donors</a>
+          <a class="button button-secondary" href="#dashboards">Donate Blood</a>
+          <a class="button button-emergency pulse" href="#sos">Emergency SOS</a>
+        </div>
+        <div class="trust-strip" aria-label="Platform trust signals">
+          <span>Verified donors</span>
+          <span>Hospital stock sync</span>
+          <span>SMS alerts</span>
+        </div>
+      </div>
+      <div class="hero-visual reveal" aria-label="Animated blood drop emergency network illustration">
+        <div class="orbital-map">
+          <div class="blood-drop">
+            <span class="shine"></span>
+          </div>
+          <span class="node donor">Donor</span>
+          <span class="node hospital">Hospital</span>
+          <span class="node patient">Patient</span>
+          <span class="node camp">Camp</span>
+          <div class="ring ring-one"></div>
+          <div class="ring ring-two"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about-band" id="about">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Built for urgent care</p>
+        <h2>A connected response layer for every blood request</h2>
+        <p>BloodConnect gives communities one trusted place to discover donors, coordinate camps, monitor hospital stock, and activate emergency help.</p>
+      </div>
+      <div class="about-grid">
+        <article class="glass-panel reveal">
+          <span class="panel-icon">🛡</span>
+          <h3>Verified Network</h3>
+          <p>ID checks, health eligibility lists, and donation guidelines keep matching safer.</p>
+        </article>
+        <article class="glass-panel reveal">
+          <span class="panel-icon">📡</span>
+          <h3>Live Matching</h3>
+          <p>Priority routing connects urgent requests to nearby eligible donors and hospitals.</p>
+        </article>
+        <article class="glass-panel reveal">
+          <span class="panel-icon">🌐</span>
+          <h3>Rural Ready</h3>
+          <p>SMS, voice assistance, Anganwadi centers, and government school camps support low-connectivity areas.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Core features</p>
+        <h2>Everything needed from discovery to donation</h2>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card reveal"><span>⌁</span><h3>Real-time donor discovery</h3><p>Search eligible nearby donors by blood group, distance, and last donation date.</p></article>
+        <article class="feature-card reveal"><span>⌖</span><h3>Nearby donation camps</h3><p>Find scheduled camps with live seat availability, organizer contacts, and navigation.</p></article>
+        <article class="feature-card reveal"><span>▣</span><h3>Hospital stock monitoring</h3><p>Track blood units, shortages, and pending requests across connected hospitals.</p></article>
+        <article class="feature-card reveal"><span>!</span><h3>Emergency SOS alerts</h3><p>Broadcast urgent needs to high-match donors with location and contact verification.</p></article>
+        <article class="feature-card reveal"><span>✓</span><h3>Eligibility reminders</h3><p>Donation readiness, health checklist prompts, and personalized reminders.</p></article>
+        <article class="feature-card reveal"><span>◆</span><h3>Verified donor profiles</h3><p>Trust badges, ID status, contribution history, and hospital-confirmed donations.</p></article>
+      </div>
+    </section>
+
+    <section class="section split-section" id="find-donors">
+      <div class="section-heading align-left reveal">
+        <p class="eyebrow">Find donors</p>
+        <h2>Search nearby availability in seconds</h2>
+        <p>Filter by blood group and urgency, then review donors, hospitals, and active camp stock in one view.</p>
+      </div>
+      <div class="finder-card glass-panel reveal">
+        <div class="finder-controls">
+          <label>Blood Group
+            <select id="bloodGroup">
+              <option>O+</option><option>A+</option><option>B+</option><option>AB+</option><option>O-</option><option>A-</option><option>B-</option><option>AB-</option>
+            </select>
+          </label>
+          <label>Urgency
+            <select id="urgency">
+              <option>Emergency</option><option>Today</option><option>This week</option>
+            </select>
+          </label>
+          <button class="button button-primary" id="matchButton" type="button">Search Matches</button>
+        </div>
+        <div class="match-list" id="matchList" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section map-section" id="camps">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Google Maps ready</p>
+        <h2>Nearby camps, hospitals, and donor clusters</h2>
+      </div>
+      <div class="map-shell reveal">
+        <div class="map-canvas" role="img" aria-label="Map style view showing camps, hospitals, and donor locations">
+          <span class="pin pin-hospital">H</span>
+          <span class="pin pin-camp">C</span>
+          <span class="pin pin-donor">D</span>
+          <span class="pin pin-donor second">D</span>
+          <div class="route-line"></div>
+        </div>
+        <div class="map-list">
+          <h3>Active Donation Camps</h3>
+          <article><strong>Govt. School Camp</strong><span>Today, 10:00 AM · 42 registrations</span></article>
+          <article><strong>Anganwadi Health Drive</strong><span>Tomorrow · SMS enabled · 18 seats left</span></article>
+          <article><strong>City Hospital Mega Drive</strong><span>Saturday · Live stock sync enabled</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="section-heading reveal">
+        <p class="eyebrow">How it works</p>
+        <h2>Four steps from request to response</h2>
+      </div>
+      <div class="steps">
+        <article class="step reveal"><span>1</span><h3>Register</h3><p>Join as a donor, patient, hospital, or camp organizer.</p></article>
+        <article class="step reveal"><span>2</span><h3>Search</h3><p>Check nearby donors, hospital stock, and camp availability.</p></article>
+        <article class="step reveal"><span>3</span><h3>Connect</h3><p>Use verified calls, SMS, and location-based routing.</p></article>
+        <article class="step reveal"><span>4</span><h3>Save lives</h3><p>Track completion and reward every successful donation.</p></article>
+      </div>
+    </section>
+
+    <section class="stats-band section" aria-label="Impact statistics">
+      <div class="stat reveal"><strong data-count="48200">0</strong><span>Registered Donors</span></div>
+      <div class="stat reveal"><strong data-count="12650">0</strong><span>Lives Saved</span></div>
+      <div class="stat reveal"><strong data-count="318">0</strong><span>Active Camps</span></div>
+      <div class="stat reveal"><strong data-count="8940">0</strong><span>Blood Units Available</span></div>
+    </section>
+
+    <section class="section sos-section" id="sos">
+      <div class="sos-panel reveal">
+        <div>
+          <p class="eyebrow">SOS Emergency Mode</p>
+          <h2>One-click priority blood request</h2>
+          <p>Trigger location-based matching, notify nearby eligible donors, and share verified hospital details instantly.</p>
+          <div class="sos-actions">
+            <button class="button button-emergency" id="sosButton" type="button">Activate SOS</button>
+            <button class="button button-secondary" id="voiceButton" type="button">Voice Assist</button>
+          </div>
+        </div>
+        <div class="sos-status" id="sosStatus" aria-live="polite">
+          <span class="status-dot"></span>
+          <strong>Standby</strong>
+          <p>Emergency routing is ready.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dashboards" id="dashboards">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Role dashboards</p>
+        <h2>Purpose-built tools for every user</h2>
+      </div>
+      <div class="tabs reveal" role="tablist" aria-label="Dashboard views">
+        <button class="tab active" role="tab" aria-selected="true" data-dashboard="donor">Donor</button>
+        <button class="tab" role="tab" aria-selected="false" data-dashboard="patient">Patient</button>
+        <button class="tab" role="tab" aria-selected="false" data-dashboard="hospital">Hospital</button>
+        <button class="tab" role="tab" aria-selected="false" data-dashboard="camp">Camp Organizer</button>
+      </div>
+      <div class="dashboard-shell reveal" id="dashboardShell"></div>
+    </section>
+
+    <section class="section rewards-section">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Rewards and trust</p>
+        <h2>Celebrate contribution without losing clinical clarity</h2>
+      </div>
+      <div class="reward-grid">
+        <article class="reward-card reveal"><span>🎖</span><h3>Badges</h3><p>Life Saver, Emergency Hero, Rural Champion, and Milestone Donor.</p></article>
+        <article class="reward-card reveal"><span>🏆</span><h3>Leaderboard</h3><p>Top donors ranked by verified contributions and response reliability.</p></article>
+        <article class="reward-card reveal"><span>✅</span><h3>Health Checklist</h3><p>Age, weight, hemoglobin, interval, and wellness checks before every donation.</p></article>
+      </div>
+    </section>
+
+    <section class="section contact-faq" id="contact">
+      <div class="contact-card glass-panel reveal">
+        <p class="eyebrow">Contact us</p>
+        <h2>Coordinate a request or launch a camp</h2>
+        <form>
+          <label>Name <input type="text" placeholder="Your name" /></label>
+          <label>Email or Phone <input type="text" placeholder="contact@example.com" /></label>
+          <label>Message <textarea placeholder="Tell us what you need"></textarea></label>
+          <button class="button button-primary" type="button">Send Message</button>
+        </form>
+      </div>
+      <div class="faq-card reveal" id="faqs">
+        <p class="eyebrow">FAQs</p>
+        <details open><summary>How are donors verified?</summary><p>Profiles can include ID status, health checklist completion, last donation date, and hospital-confirmed donation history.</p></details>
+        <details><summary>Can rural users receive alerts?</summary><p>Yes. BloodConnect includes SMS-based alerts and voice-assisted access for low-connectivity areas.</p></details>
+        <details><summary>Can hospitals manage stock?</summary><p>Hospitals can update blood units, manage requests, create drives, and review analytics.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <a class="brand" href="#home"><span class="brand-mark">B+</span><span>BloodConnect</span></a>
+      <p>Emergency-focused blood donation coordination for donors, patients, hospitals, and communities.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#find-donors">Find Donors</a>
+      <a href="#camps">Camps</a>
+      <a href="#sos">SOS</a>
+      <a href="#faqs">FAQs</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
