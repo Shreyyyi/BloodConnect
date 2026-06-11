@@ -7,7 +7,7 @@
   <meta name="description" content="BloodConnect connects donors, patients, hospitals, and camp organizers in real time." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -33,7 +33,16 @@
       </div>
       <div class="nav-actions">
         <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
-        <a class="button button-emergency" href="#sos">Emergency SOS</a>
+        <div class="auth-buttons" id="authButtons">
+          <button class="button button-ghost" id="loginBtn" type="button">Log In</button>
+          <button class="button button-primary" id="registerBtn" type="button">Register</button>
+        </div>
+        <div class="user-menu hidden" id="userMenu">
+          <span class="user-badge" id="userBadge"></span>
+          <button class="button button-ghost" id="verifyBtn" type="button">AI Verify</button>
+          <button class="button button-secondary" id="logoutBtn" type="button">Logout</button>
+        </div>
+        <a class="button button-emergency nav-sos" href="#sos">SOS</a>
       </div>
     </nav>
   </header>
@@ -130,7 +139,9 @@
           </label>
           <button class="button button-primary" id="matchButton" type="button">Search Matches</button>
         </div>
-        <div class="match-list" id="matchList" aria-live="polite"></div>
+        <div class="match-list" id="matchList" aria-live="polite">
+          <p class="match-loading">Loading donors…</p>
+        </div>
       </div>
     </section>
 
@@ -147,11 +158,9 @@
           <span class="pin pin-donor second">D</span>
           <div class="route-line"></div>
         </div>
-        <div class="map-list">
+        <div class="map-list" id="campList">
           <h3>Active Donation Camps</h3>
-          <article><strong>Govt. School Camp</strong><span>Today, 10:00 AM · 42 registrations</span></article>
-          <article><strong>Anganwadi Health Drive</strong><span>Tomorrow · SMS enabled · 18 seats left</span></article>
-          <article><strong>City Hospital Mega Drive</strong><span>Saturday · Live stock sync enabled</span></article>
+          <p class="match-loading">Loading camps…</p>
         </div>
       </div>
     </section>
@@ -225,11 +234,11 @@
       <div class="contact-card glass-panel reveal">
         <p class="eyebrow">Contact us</p>
         <h2>Coordinate a request or launch a camp</h2>
-        <form>
-          <label>Name <input type="text" placeholder="Your name" /></label>
-          <label>Email or Phone <input type="text" placeholder="contact@example.com" /></label>
-          <label>Message <textarea placeholder="Tell us what you need"></textarea></label>
-          <button class="button button-primary" type="button">Send Message</button>
+        <form id="contactForm">
+          <label>Name <input type="text" id="contactName" placeholder="Your name" required /></label>
+          <label>Email or Phone <input type="text" id="contactInfo" placeholder="contact@example.com" required /></label>
+          <label>Message <textarea id="contactMessage" placeholder="Tell us what you need" required></textarea></label>
+          <button class="button button-primary" type="submit">Send Message</button>
         </form>
       </div>
       <div class="faq-card reveal" id="faqs">
@@ -253,6 +262,75 @@
       <a href="#faqs">FAQs</a>
     </div>
   </footer>
+
+  <div class="modal-overlay hidden" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal">
+      <button class="modal-close" type="button" id="closeAuthModal" aria-label="Close">×</button>
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-mode="login" type="button">Log In</button>
+        <button class="modal-tab" data-mode="register" type="button">Register</button>
+      </div>
+      <h2 id="authModalTitle">Welcome to BloodConnect</h2>
+      <p class="modal-sub">Join the network — donors, patients, hospitals & camp organizers</p>
+      <form id="authForm">
+        <div class="register-fields hidden" id="registerFields">
+          <label>Full Name <input type="text" id="regName" placeholder="Your full name" /></label>
+          <label>Role
+            <select id="regRole">
+              <option value="donor">Blood Donor</option>
+              <option value="patient">Patient / Requester</option>
+              <option value="hospital">Hospital</option>
+              <option value="camp">Camp Organizer</option>
+            </select>
+          </label>
+          <label>Blood Group
+            <select id="regBloodGroup">
+              <option value="">Select (donors/patients)</option>
+              <option>O+</option><option>A+</option><option>B+</option><option>AB+</option>
+              <option>O-</option><option>A-</option><option>B-</option><option>AB-</option>
+            </select>
+          </label>
+          <label>Phone <input type="tel" id="regPhone" placeholder="+91 98765 43210" /></label>
+        </div>
+        <label>Email <input type="email" id="authEmail" placeholder="you@example.com" required /></label>
+        <label>Password <input type="password" id="authPassword" placeholder="••••••••" required minlength="6" /></label>
+        <button class="button button-primary full-width" type="submit" id="authSubmit">Log In</button>
+      </form>
+      <p class="demo-hint">Demo: priya@bloodconnect.in / password123</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="verifyModal" role="dialog" aria-modal="true" aria-labelledby="verifyModalTitle">
+    <div class="modal modal-wide">
+      <button class="modal-close" type="button" id="closeVerifyModal" aria-label="Close">×</button>
+      <h2 id="verifyModalTitle">AI Donor Verification</h2>
+      <p class="modal-sub">Our AI engine validates identity documents, health metrics, and donation eligibility in seconds.</p>
+      <form id="verifyForm">
+        <div class="verify-grid">
+          <label>ID Document Type
+            <select id="docType">
+              <option value="aadhaar">Aadhaar</option>
+              <option value="pan">PAN Card</option>
+              <option value="driving_license">Driving License</option>
+            </select>
+          </label>
+          <label>ID Number <input type="text" id="docNumber" placeholder="e.g. 1234 5678 9012" required /></label>
+          <label>Age <input type="number" id="verifyAge" min="18" max="65" placeholder="25" /></label>
+          <label>Weight (kg) <input type="number" id="verifyWeight" min="40" step="0.1" placeholder="60" /></label>
+          <label>Hemoglobin (g/dL) <input type="number" id="verifyHb" min="10" step="0.1" placeholder="13.5" /></label>
+          <label>Last Donation Date <input type="date" id="verifyLastDonation" /></label>
+        </div>
+        <button class="button button-primary full-width" type="submit">Run AI Verification</button>
+      </form>
+      <div class="verify-result hidden" id="verifyResult">
+        <div class="verify-score-ring" id="verifyScoreRing"></div>
+        <p class="verify-summary" id="verifySummary"></p>
+        <ul class="verify-checks" id="verifyChecks"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <script src="script.js"></script>
 </body>

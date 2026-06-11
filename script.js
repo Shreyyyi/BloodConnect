@@ -1,88 +1,87 @@
-const donorMatches = [
-  { name: "Aarav Sharma", group: "O+", distance: "1.8 km", status: "Eligible now", score: "98%" },
-  { name: "Meera Iyer", group: "A+", distance: "2.4 km", status: "Available today", score: "94%" },
-  { name: "Rohan Das", group: "B+", distance: "3.1 km", status: "Verified donor", score: "91%" },
-  { name: "Fatima Khan", group: "AB-", distance: "4.6 km", status: "Emergency responder", score: "89%" }
-];
+const API = "/api";
 
-const dashboards = {
-  donor: {
-    title: "Donor Dashboard",
-    profile: "Priya Nair · B+",
-    subtitle: "Last donation: 74 days ago · Eligible from today",
-    metrics: [
-      ["Donations", "12"],
-      ["Badges", "5"],
-      ["Nearby requests", "8"],
-      ["Reward points", "2,450"]
-    ],
-    cards: [
-      ["Eligibility Status", "Ready to donate after completing the health checklist.", 92],
-      ["Donation History", "City Hospital, Govt. School Camp, Red Cross Drive.", 68]
-    ]
-  },
-  patient: {
-    title: "Patient Dashboard",
-    profile: "Emergency request · O-",
-    subtitle: "Status: 6 donors notified · Hospital verification pending",
-    metrics: [
-      ["Nearby donors", "23"],
-      ["Hospitals", "5"],
-      ["Response ETA", "9 min"],
-      ["Request status", "Live"]
-    ],
-    cards: [
-      ["Search Blood", "Filter by group, radius, hospital, and availability.", 86],
-      ["Track Request", "Priority notifications sent to verified O- donors.", 74]
-    ]
-  },
-  hospital: {
-    title: "Hospital Dashboard",
-    profile: "Metro Care Blood Bank",
-    subtitle: "Live stock monitoring · 14 requests managed today",
-    metrics: [
-      ["O+ Units", "46"],
-      ["B+ Units", "31"],
-      ["Critical groups", "2"],
-      ["Drives active", "4"]
-    ],
-    cards: [
-      ["Manage Requests", "Approve emergency cases and assign verified donors.", 78],
-      ["Analytics", "Monitor usage trends, shortages, and donor conversion.", 64]
-    ]
-  },
-  camp: {
-    title: "Camp Organizer Dashboard",
-    profile: "Community Mega Drive",
-    subtitle: "Live registrations: 142 · Attendance tracking enabled",
-    metrics: [
-      ["Registrations", "142"],
-      ["Checked in", "88"],
-      ["SMS sent", "1,920"],
-      ["Units target", "120"]
-    ],
-    cards: [
-      ["Manage Camps", "Create drives at Anganwadi centers, schools, and hospitals.", 82],
-      ["Location Sharing", "Share camp routes and live attendance with hospitals.", 70]
-    ]
-  }
+const state = {
+  token: localStorage.getItem("bloodconnect-token"),
+  user: JSON.parse(localStorage.getItem("bloodconnect-user") || "null"),
+  coords: { lat: 28.6139, lng: 77.2090 }
 };
 
-const navToggle = document.querySelector(".nav-toggle");
-const navbar = document.querySelector(".navbar");
-const themeToggle = document.querySelector(".theme-toggle");
-const matchButton = document.querySelector("#matchButton");
-const matchList = document.querySelector("#matchList");
-const bloodGroup = document.querySelector("#bloodGroup");
-const urgency = document.querySelector("#urgency");
-const sosButton = document.querySelector("#sosButton");
-const voiceButton = document.querySelector("#voiceButton");
-const sosStatus = document.querySelector("#sosStatus");
-const dashboardShell = document.querySelector("#dashboardShell");
-const tabs = document.querySelectorAll(".tab");
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
 
-const savedTheme = localStorage.getItem("bloodconnect-theme");
-if (savedTheme === "dark") {
+async function api(path, options = {}) {
+  const headers = { "Content-Type": "application/json", ...options.headers };
+  if (state.token) headers.Authorization = `Bearer ${state.token}`;
+
+  const res = await fetch(`${API}${path}`, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) throw new Error(data.error || "Request failed");
+  return data;
+}
+
+function toast(message, type = "info") {
+  const container = $("#toastContainer");
+  const el = document.createElement("div");
+  el.className = `toast toast-${type}`;
+  el.textContent = message;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add("fade-out");
+    setTimeout(() => el.remove(), 300);
+  }, 3500);
+}
+
+function saveSession(token, user) {
+  state.token = token;
+  state.user = user;
+  localStorage.setItem("bloodconnect-token", token);
+  localStorage.setItem("bloodconnect-user", JSON.stringify(user));
+  updateAuthUI();
+}
+
+function clearSession() {
+  state.token = null;
+  state.user = null;
+  localStorage.removeItem("bloodconnect-token");
+  localStorage.removeItem("bloodconnect-user");
+  updateAuthUI();
+}
+
+function updateAuthUI() {
+  const authButtons = $("#authButtons");
+  const userMenu = $("#userMenu");
+  const userBadge = $("#userBadge");
+  const verifyBtn = $("#verifyBtn");
+
+  if (state.user) {
+    authButtons.classList.add("hidden");
+    userMenu.classList.remove("hidden");
+    const verified = state.user.verified ? " ✓" : "";
+    userBadge.textContent = `${state.user.name.split(" ")[0]} · ${state.user.role}${verified}`;
+    verifyBtn.classList.toggle("hidden", state.user.verified);
+  } else {
+    authButtons.classList.remove("hidden");
+    userMenu.classList.add("hidden");
+  }
+}
+
+function openModal(id) {
+  $(id).classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(id) {
+  $(id).classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+/* ── Navigation ── */
+const navToggle = $(".nav-toggle");
+const navbar = $(".navbar");
+const themeToggle = $(".theme-toggle");
+
+if (localStorage.getItem("bloodconnect-theme") === "dark") {
   document.body.classList.add("dark");
 }
 
@@ -91,7 +90,7 @@ navToggle.addEventListener("click", () => {
   navToggle.setAttribute("aria-expanded", String(isOpen));
 });
 
-document.querySelectorAll(".nav-links a").forEach((link) => {
+$$(".nav-links a").forEach((link) => {
   link.addEventListener("click", () => {
     navbar.classList.remove("open");
     navToggle.setAttribute("aria-expanded", "false");
@@ -103,85 +102,363 @@ themeToggle.addEventListener("click", () => {
   localStorage.setItem("bloodconnect-theme", document.body.classList.contains("dark") ? "dark" : "light");
 });
 
-function renderMatches() {
-  const selectedGroup = bloodGroup.value;
-  const selectedUrgency = urgency.value;
-  const matches = donorMatches.map((donor, index) => ({
-    ...donor,
-    group: index === 0 ? selectedGroup : donor.group
-  }));
+/* ── Auth Modal ── */
+let authMode = "login";
 
-  matchList.innerHTML = matches.map((donor) => `
-    <article class="match-item">
-      <span class="blood-badge">${donor.group}</span>
-      <div>
-        <strong>${donor.name}</strong>
-        <p>${donor.distance} away · ${donor.status} · ${selectedUrgency} match ${donor.score}</p>
-      </div>
-      <button class="button button-secondary" type="button">Connect</button>
-    </article>
+$("#loginBtn").addEventListener("click", () => {
+  authMode = "login";
+  setAuthMode("login");
+  openModal("#authModal");
+});
+
+$("#registerBtn").addEventListener("click", () => {
+  authMode = "register";
+  setAuthMode("register");
+  openModal("#authModal");
+});
+
+$("#closeAuthModal").addEventListener("click", () => closeModal("#authModal"));
+
+$$(".modal-tab").forEach((tab) => {
+  tab.addEventListener("click", () => setAuthMode(tab.dataset.mode));
+});
+
+function setAuthMode(mode) {
+  authMode = mode;
+  $$(".modal-tab").forEach((t) => t.classList.toggle("active", t.dataset.mode === mode));
+  $("#registerFields").classList.toggle("hidden", mode === "login");
+  $("#authSubmit").textContent = mode === "login" ? "Log In" : "Create Account";
+  $("#authModalTitle").textContent = mode === "login" ? "Welcome back" : "Join BloodConnect";
+}
+
+$("#authForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = $("#authEmail").value.trim();
+  const password = $("#authPassword").value;
+
+  try {
+    if (authMode === "login") {
+      const { token, user } = await api("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password })
+      });
+      saveSession(token, user);
+      closeModal("#authModal");
+      toast(`Welcome back, ${user.name}!`, "success");
+    } else {
+      const body = {
+        name: $("#regName").value.trim(),
+        email,
+        password,
+        role: $("#regRole").value,
+        bloodGroup: $("#regBloodGroup").value || null,
+        phone: $("#regPhone").value.trim() || null
+      };
+      if (!body.name) return toast("Please enter your name", "error");
+
+      const { token, user } = await api("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(body)
+      });
+      saveSession(token, user);
+      closeModal("#authModal");
+      toast("Account created! Complete AI verification.", "success");
+      openModal("#verifyModal");
+    }
+  } catch (err) {
+    toast(err.message, "error");
+  }
+});
+
+$("#logoutBtn").addEventListener("click", () => {
+  clearSession();
+  toast("Logged out", "info");
+});
+
+/* ── AI Verification ── */
+$("#verifyBtn").addEventListener("click", () => openModal("#verifyModal"));
+$("#closeVerifyModal").addEventListener("click", () => closeModal("#verifyModal"));
+
+$("#verifyForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!state.token) return toast("Please log in first", "error");
+
+  try {
+    const { verification, user } = await api("/auth/verify", {
+      method: "POST",
+      body: JSON.stringify({
+        documentType: $("#docType").value,
+        documentNumber: $("#docNumber").value.trim(),
+        age: parseInt($("#verifyAge").value, 10) || null,
+        weight: parseFloat($("#verifyWeight").value) || null,
+        hemoglobin: parseFloat($("#verifyHb").value) || null,
+        lastDonationDate: $("#verifyLastDonation").value || null
+      })
+    });
+
+    saveSession(state.token, user);
+    showVerificationResult(verification);
+    toast(verification.status === "approved" ? "AI verification passed!" : `Status: ${verification.status}`, verification.status === "approved" ? "success" : "info");
+  } catch (err) {
+    toast(err.message, "error");
+  }
+});
+
+function showVerificationResult(v) {
+  const result = $("#verifyResult");
+  result.classList.remove("hidden");
+
+  const ring = $("#verifyScoreRing");
+  const color = v.status === "approved" ? "var(--green)" : v.status === "review" ? "var(--blue)" : "var(--red)";
+  ring.innerHTML = `
+    <svg viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="8"/>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="${color}" stroke-width="8"
+        stroke-dasharray="${326 * v.score / 100} 326" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+    </svg>
+    <strong>${v.score}%</strong>
+    <span>${v.status.toUpperCase()}</span>
+  `;
+
+  $("#verifySummary").textContent = v.aiSummary;
+  $("#verifyChecks").innerHTML = v.checks.map((c) => `
+    <li class="${c.pass ? "pass" : "fail"}">
+      <span class="check-icon">${c.pass ? "✓" : "✗"}</span>
+      <div><strong>${c.name}</strong><p>${c.detail}</p></div>
+    </li>
   `).join("");
 }
 
-matchButton.addEventListener("click", renderMatches);
-renderMatches();
+/* ── Donor Search ── */
+const matchButton = $("#matchButton");
+const matchList = $("#matchList");
+const bloodGroup = $("#bloodGroup");
+const urgency = $("#urgency");
 
-sosButton.addEventListener("click", () => {
-  const dot = sosStatus.querySelector(".status-dot");
-  dot.classList.add("active");
-  sosStatus.querySelector("strong").textContent = "SOS Activated";
-  sosStatus.querySelector("p").textContent = "28 nearby verified donors notified. Location matching and hospital escalation are active.";
+async function renderMatches() {
+  matchList.innerHTML = `<p class="match-loading"><span class="spinner"></span> Searching nearby donors…</p>`;
+
+  try {
+    const params = new URLSearchParams({
+      bloodGroup: bloodGroup.value,
+      urgency: urgency.value,
+      lat: state.coords.lat,
+      lng: state.coords.lng
+    });
+    const { matches } = await api(`/donors/search?${params}`);
+
+    if (!matches.length) {
+      matchList.innerHTML = `<p class="empty-state">No donors found nearby. Try a different blood group.</p>`;
+      return;
+    }
+
+    matchList.innerHTML = matches.map((donor) => `
+      <article class="match-item">
+        <span class="blood-badge">${donor.bloodGroup}</span>
+        <div>
+          <strong>${donor.name} ${donor.verified ? '<span class="verified-tag">Verified</span>' : ""}</strong>
+          <p>${donor.distance} away · ${donor.status} · ${urgency.value} match ${donor.score}</p>
+        </div>
+        <button class="button button-secondary connect-btn" type="button" data-phone="${donor.phone || ""}">Connect</button>
+      </article>
+    `).join("");
+
+    $$(".connect-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const phone = btn.dataset.phone;
+        if (phone) {
+          toast(`Connecting to ${phone}…`, "success");
+        } else {
+          toast("Donor notified — they'll respond shortly", "success");
+        }
+      });
+    });
+  } catch (err) {
+    matchList.innerHTML = `<p class="empty-state error">${err.message}</p>`;
+  }
+}
+
+matchButton.addEventListener("click", renderMatches);
+
+/* ── Camps ── */
+async function loadCamps() {
+  const campList = $("#campList");
+  try {
+    const { camps } = await api("/camps");
+    campList.innerHTML = `<h3>Active Donation Camps</h3>` + camps.map((c) => `
+      <article>
+        <strong>${c.name}</strong>
+        <span>${c.date}, ${c.time} · ${c.seatsRegistered} registrations · ${c.seatsLeft} seats left${c.smsEnabled ? " · SMS enabled" : ""}</span>
+        <button class="button button-secondary camp-register" data-id="${c.id}" type="button">Register</button>
+      </article>
+    `).join("");
+
+    $$(".camp-register").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!state.token) return toast("Log in to register for a camp", "error");
+        try {
+          const data = await api(`/camps/${btn.dataset.id}/register`, { method: "POST" });
+          toast(data.message, "success");
+          loadCamps();
+        } catch (err) {
+          toast(err.message, "error");
+        }
+      });
+    });
+  } catch {
+    campList.innerHTML = `<h3>Active Donation Camps</h3><p class="empty-state">Unable to load camps</p>`;
+  }
+}
+
+/* ── SOS ── */
+const sosButton = $("#sosButton");
+const voiceButton = $("#voiceButton");
+const sosStatus = $("#sosStatus");
+
+sosButton.addEventListener("click", async () => {
+  sosButton.disabled = true;
+  sosButton.textContent = "Activating…";
+
+  try {
+    const data = await api("/sos/activate", {
+      method: "POST",
+      body: JSON.stringify({
+        bloodGroup: bloodGroup.value,
+        urgency: "Emergency",
+        lat: state.coords.lat,
+        lng: state.coords.lng,
+        contactPhone: state.user?.phone
+      })
+    });
+
+    const dot = sosStatus.querySelector(".status-dot");
+    dot.classList.add("active");
+    sosStatus.querySelector("strong").textContent = "SOS Activated";
+    sosStatus.querySelector("p").textContent =
+      `${data.donorsNotified} nearby verified donors notified. ETA ~${data.eta}. Hospital escalation active.`;
+    toast("Emergency SOS activated!", "success");
+  } catch (err) {
+    toast(err.message, "error");
+  } finally {
+    sosButton.disabled = false;
+    sosButton.textContent = "Activate SOS";
+  }
 });
 
 voiceButton.addEventListener("click", () => {
   sosStatus.querySelector("strong").textContent = "Voice Assist Ready";
   sosStatus.querySelector("p").textContent = "Voice-guided request flow enabled for low-connectivity support.";
+  if ("speechSynthesis" in window) {
+    const utter = new SpeechSynthesisUtterance("BloodConnect voice assist ready. Say your blood group and location.");
+    speechSynthesis.speak(utter);
+  }
+  toast("Voice assist enabled", "info");
 });
 
-function renderDashboard(key) {
-  const dashboard = dashboards[key];
-  dashboardShell.innerHTML = `
-    <div class="dashboard-grid">
-      <aside class="profile-card">
-        <p>${dashboard.title}</p>
-        <h3>${dashboard.profile}</h3>
-        <p>${dashboard.subtitle}</p>
-      </aside>
-      <div class="dashboard-metrics">
-        ${dashboard.metrics.map(([label, value]) => `
-          <div class="metric">
-            <strong>${value}</strong>
-            <span>${label}</span>
-          </div>
+/* ── Dashboards ── */
+const dashboardShell = $("#dashboardShell");
+const tabs = $$(".tab");
+
+async function renderDashboard(role) {
+  dashboardShell.innerHTML = `<div class="dashboard-loading"><span class="spinner"></span> Loading dashboard…</div>`;
+
+  try {
+    const dashboard = state.token
+      ? await api(`/contact/dashboard/${role}`)
+      : getFallbackDashboard(role);
+
+    dashboardShell.innerHTML = `
+      <div class="dashboard-grid">
+        <aside class="profile-card">
+          <p>${dashboard.title}</p>
+          <h3>${dashboard.profile}</h3>
+          <p>${dashboard.subtitle}</p>
+        </aside>
+        <div class="dashboard-metrics">
+          ${dashboard.metrics.map(([label, value]) => `
+            <div class="metric"><strong>${value}</strong><span>${label}</span></div>
+          `).join("")}
+        </div>
+        ${dashboard.cards.map(([title, text, progress]) => `
+          <article class="mini-card">
+            <h3>${title}</h3>
+            <p>${text}</p>
+            <div class="progress" aria-label="${title} progress"><span style="width:${progress}%"></span></div>
+          </article>
         `).join("")}
-      </div>
-      ${dashboard.cards.map(([title, text, progress]) => `
-        <article class="mini-card">
-          <h3>${title}</h3>
-          <p>${text}</p>
-          <div class="progress" aria-label="${title} progress">
-            <span style="width: ${progress}%"></span>
+        ${dashboard.stock ? `
+          <div class="mini-card stock-card">
+            <h3>Live Blood Stock</h3>
+            <div class="stock-grid">
+              ${dashboard.stock.map((s) => `
+                <div class="stock-item ${s.units < 10 ? "critical" : ""}">
+                  <strong>${s.blood_group}</strong><span>${s.units} units</span>
+                </div>
+              `).join("")}
+            </div>
           </div>
-        </article>
-      `).join("")}
-    </div>
-  `;
+        ` : ""}
+      </div>
+    `;
+  } catch {
+    dashboardShell.innerHTML = `<p class="empty-state">Log in to view your personalized dashboard</p>`;
+  }
+}
+
+function getFallbackDashboard(role) {
+  const fallbacks = {
+    donor: { title: "Donor Dashboard", profile: "Guest · —", subtitle: "Log in to see your profile", metrics: [["Donations","—"],["Badges","—"],["Nearby requests","—"],["Reward points","—"]], cards: [["Eligibility","Log in and verify.",20],["History","—",10]] },
+    patient: { title: "Patient Dashboard", profile: "Guest", subtitle: "Log in to create requests", metrics: [["Nearby donors","5"],["Hospitals","2"],["Response ETA","—"],["Status","Idle"]], cards: [["Search Blood","Use the finder above.",50],["Track Request","—",20]] },
+    hospital: { title: "Hospital Dashboard", profile: "Metro Care Blood Bank", subtitle: "Demo view", metrics: [["O+ Units","46"],["B+ Units","31"],["Critical groups","2"],["Drives active","3"]], cards: [["Manage Requests","Approve emergency cases.",78],["Analytics","Monitor trends.",64]] },
+    camp: { title: "Camp Organizer Dashboard", profile: "Community Mega Drive", subtitle: "Demo view", metrics: [["Registrations","142"],["Checked in","88"],["SMS sent","1,920"],["Units target","120"]], cards: [["Manage Camps","Create drives.",82],["Location Sharing","Share routes.",70]] }
+  };
+  return fallbacks[role];
 }
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
-    tabs.forEach((item) => {
-      item.classList.remove("active");
-      item.setAttribute("aria-selected", "false");
-    });
+    tabs.forEach((t) => { t.classList.remove("active"); t.setAttribute("aria-selected", "false"); });
     tab.classList.add("active");
     tab.setAttribute("aria-selected", "true");
     renderDashboard(tab.dataset.dashboard);
   });
 });
 
-renderDashboard("donor");
+/* ── Contact ── */
+$("#contactForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const data = await api("/contact", {
+      method: "POST",
+      body: JSON.stringify({
+        name: $("#contactName").value.trim(),
+        contact: $("#contactInfo").value.trim(),
+        message: $("#contactMessage").value.trim()
+      })
+    });
+    toast(data.message, "success");
+    e.target.reset();
+  } catch (err) {
+    toast(err.message, "error");
+  }
+});
 
+/* ── Stats ── */
+async function loadStats() {
+  try {
+    const stats = await api("/stats");
+    $$("[data-count]").forEach((el) => {
+      el.dataset.count = stats[
+        el.nextElementSibling?.textContent.includes("Donors") ? "registeredDonors"
+        : el.nextElementSibling?.textContent.includes("Saved") ? "livesSaved"
+        : el.nextElementSibling?.textContent.includes("Camps") ? "activeCamps"
+        : "bloodUnitsAvailable"
+      ];
+    });
+  } catch { /* use defaults */ }
+}
+
+/* ── Animations ── */
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
@@ -191,7 +468,7 @@ const revealObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.14 });
 
-document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+$$(".reveal").forEach((el) => revealObserver.observe(el));
 
 const statObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -203,14 +480,44 @@ const statObserver = new IntersectionObserver((entries) => {
 
     function tick(now) {
       const progress = Math.min((now - start) / duration, 1);
-      const value = Math.floor(target * (1 - Math.pow(1 - progress, 3)));
-      number.textContent = value.toLocaleString("en-IN");
+      number.textContent = Math.floor(target * (1 - Math.pow(1 - progress, 3))).toLocaleString("en-IN");
       if (progress < 1) requestAnimationFrame(tick);
     }
-
     requestAnimationFrame(tick);
     statObserver.unobserve(number);
   });
 }, { threshold: 0.45 });
 
-document.querySelectorAll("[data-count]").forEach((number) => statObserver.observe(number));
+$$("[data-count]").forEach((n) => statObserver.observe(n));
+
+/* ── Geolocation ── */
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    (pos) => { state.coords = { lat: pos.coords.latitude, lng: pos.coords.longitude }; },
+    () => {}
+  );
+}
+
+/* ── Init ── */
+updateAuthUI();
+renderMatches();
+loadCamps();
+renderDashboard("donor");
+loadStats();
+
+if (state.token) {
+  api("/auth/me").then(({ user }) => saveSession(state.token, user)).catch(() => clearSession());
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeModal("#authModal");
+    closeModal("#verifyModal");
+  }
+});
+
+$$(".modal-overlay").forEach((overlay) => {
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal(`#${overlay.id}`);
+  });
+});
