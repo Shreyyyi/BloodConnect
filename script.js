@@ -521,3 +521,33 @@ $$(".modal-overlay").forEach((overlay) => {
     if (e.target === overlay) closeModal(`#${overlay.id}`);
   });
 });
+let tl = gsap.timeline();
+tl.from("#logo", {
+  opacity: 0,
+  x: 1050,
+  duration: 1,
+  stagger: 0.1,
+  ease: "power1.inOut",
+});
+tl.from(".nav-actions button", {
+  opacity: 0,
+  
+  stagger: 0.1,
+  ease: "power1.inOut",
+})
+tl.from(".nav-links h5",{
+  opacity: 0,
+  y: -100,
+  stagger: 0.1,
+  ease: "power1.inOut",
+})
+tl.from("#logotext", {
+  opacity: 0,
+  y:" 50%",
+  stagger: 0.1,
+  ease: "power1.inOut",
+})
+
+
+
+
