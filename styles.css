@@ -1465,3 +1465,20 @@ summary {
     transition-duration: 0.01ms !important;
   }
 }
+.map-container{
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid #dbe4f0;
+    background: #fff;
+}
+
+.map-frame{
+    display: block;
+    width: 100%;
+    height: 500px;
+    border: none;
+}
