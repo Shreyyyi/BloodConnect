@@ -1482,3 +1482,9 @@ summary {
     height: 500px;
     border: none;
 }
+.location-box{
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #f5f7fa;
+}

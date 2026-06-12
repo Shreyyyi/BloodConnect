@@ -668,7 +668,36 @@ tl.from("#logotext", {
   stagger: 0.1,
   ease: "power1.inOut",
 })
+const locationStatus = document.getElementById("locationStatus");
 
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+            );
+
+            const data = await response.json();
+
+            locationStatus.innerHTML = `
+                <strong>Your Location:</strong><br>
+                ${data.display_name}
+            `;
+
+        } catch (error) {
+            locationStatus.textContent = "Unable to fetch address";
+        }
+
+    });
+}
+locationStatus.innerHTML = `
+    <strong>Current Location</strong><br>
+    ${address.city}, ${address.state}, ${address.country}
+`;
 
 
 
