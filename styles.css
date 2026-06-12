@@ -421,10 +421,25 @@ p {
   backdrop-filter: blur(18px);
 }
 
-.donor { top: 10%; left: 12%; }
-.hospital { top: 18%; right: 5%; }
-.patient { bottom: 14%; right: 12%; }
-.camp { bottom: 18%; left: 4%; }
+.donor {
+  top: 10%;
+  left: 12%;
+}
+
+.hospital {
+  top: 18%;
+  right: 5%;
+}
+
+.patient {
+  bottom: 14%;
+  right: 12%;
+}
+
+.camp {
+  bottom: 18%;
+  left: 4%;
+}
 
 .glass-panel,
 .feature-card,
@@ -502,6 +517,33 @@ body.dark .about-band {
   color: var(--red);
   font-weight: 900;
   margin-bottom: 1rem;
+}
+
+.auth-extra {
+  margin-bottom: 1.5rem;
+  text-align: right;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.link-button:hover {
+  color: var(--primary-dark);
+}
+
+.reset-hint {
+  font-size: 0.8125rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
 }
 
 .feature-grid {
@@ -619,7 +661,9 @@ textarea {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .match-item {
@@ -669,10 +713,28 @@ textarea {
   box-shadow: 0 14px 30px rgba(20, 32, 51, 0.18);
 }
 
-.pin-hospital { left: 16%; top: 26%; background: var(--blue); }
-.pin-camp { left: 58%; top: 18%; background: var(--green); }
-.pin-donor { left: 72%; top: 58%; background: var(--red); }
-.pin-donor.second { left: 34%; top: 68%; }
+.pin-hospital {
+  left: 16%;
+  top: 26%;
+  background: var(--blue);
+}
+
+.pin-camp {
+  left: 58%;
+  top: 18%;
+  background: var(--green);
+}
+
+.pin-donor {
+  left: 72%;
+  top: 58%;
+  background: var(--red);
+}
+
+.pin-donor.second {
+  left: 34%;
+  top: 68%;
+}
 
 .route-line {
   position: absolute;
@@ -747,7 +809,7 @@ textarea {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), transparent 60%);
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.15), transparent 60%);
   pointer-events: none;
 }
 
@@ -768,11 +830,11 @@ textarea {
   align-items: center;
   padding: 2rem;
   border: 2px solid rgba(224, 25, 53, 0.3);
-  background: linear-gradient(135deg, rgba(255,232,236,0.5), var(--surface));
+  background: linear-gradient(135deg, rgba(255, 232, 236, 0.5), var(--surface));
 }
 
 body.dark .sos-panel {
-  background: linear-gradient(135deg, rgba(224,25,53,0.08), var(--surface));
+  background: linear-gradient(135deg, rgba(224, 25, 53, 0.08), var(--surface));
 }
 
 .stock-card {
@@ -1007,9 +1069,17 @@ body.dark .sos-panel {
   max-width: 340px;
 }
 
-.toast-success { border-left: 4px solid var(--green); }
-.toast-error { border-left: 4px solid var(--red); }
-.toast-info { border-left: 4px solid var(--blue); }
+.toast-success {
+  border-left: 4px solid var(--green);
+}
+
+.toast-error {
+  border-left: 4px solid var(--red);
+}
+
+.toast-info {
+  border-left: 4px solid var(--blue);
+}
 
 .toast.fade-out {
   opacity: 0;
@@ -1018,18 +1088,37 @@ body.dark .sos-panel {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .sos-status {
@@ -1184,14 +1273,15 @@ summary {
 }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  opacity: 1;
+  /* Default to visible to avoid blank page if JS fails */
+  transform: translateY(0);
 }
 
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+/* If JS is active, it will handle the reveal if needed, but for now we ensure visibility */
+.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .pulse {
@@ -1199,17 +1289,33 @@ summary {
 }
 
 @keyframes floatDrop {
-  0%, 100% { transform: rotate(45deg) translateY(0); }
-  50% { transform: rotate(45deg) translateY(-16px); }
+
+  0%,
+  100% {
+    transform: rotate(45deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(45deg) translateY(-16px);
+  }
 }
 
 @keyframes rotateRing {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 16px 35px rgba(217, 31, 53, 0.28); }
-  50% { box-shadow: 0 16px 45px rgba(217, 31, 53, 0.48), 0 0 0 8px rgba(217, 31, 53, 0.1); }
+
+  0%,
+  100% {
+    box-shadow: 0 16px 35px rgba(217, 31, 53, 0.28);
+  }
+
+  50% {
+    box-shadow: 0 16px 45px rgba(217, 31, 53, 0.48), 0 0 0 8px rgba(217, 31, 53, 0.1);
+  }
 }
 
 @media (max-width: 980px) {
@@ -1349,6 +1455,7 @@ summary {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

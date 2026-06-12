@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BloodConnect - Emergency Blood Donation Platform</title>
-  <meta name="description" content="BloodConnect connects donors, patients, hospitals, and camp organizers in real time." />
+  <meta name="description"
+    content="BloodConnect connects donors, patients, hospitals, and camp organizers in real time." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <nav class="navbar" aria-label="Main navigation">
       <a class="brand" href="#home" aria-label="BloodConnect home">
-        <span class="brand-mark" id ="logo"aria-hidden="true">B+</span>
-        <span id ="logotext">BloodConnect</span>
+        <span class="brand-mark" id="logo" aria-hidden="true">B+</span>
+        <span id="logotext">BloodConnect</span>
       </a>
       <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <div class="nav-links">
-       <h5><a href="#home">Home</a></h5>
+        <h5><a href="#home">Home</a></h5>
         <h5><a href="#about">About</a></h5>
         <h5><a href="#find-donors">Find Donors</a></h5>
         <h5><a href="#camps">Donation Camps</a></h5>
@@ -31,7 +36,8 @@
         <h5><a href="#faqs">FAQs</a></h5>
       </div>
       <div class="nav-actions">
-        <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+        <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode"
+          title="Toggle dark mode">◐</button>
         <div class="auth-buttons" id="authButtons">
           <button class="button button-ghost" id="loginBtn" type="button">Log In</button>
           <button class="button button-primary" id="registerBtn" type="button">Register</button>
@@ -51,7 +57,8 @@
       <div class="hero-copy reveal">
         <p class="eyebrow">Real-time blood donation and emergency response</p>
         <h1>Every Drop Counts. Every Donor Saves Lives.</h1>
-        <p class="hero-text">Connect verified donors, patients, hospitals, and camp organizers through a fast, accessible, location-aware healthcare network.</p>
+        <p class="hero-text">Connect verified donors, patients, hospitals, and camp organizers through a fast,
+          accessible, location-aware healthcare network.</p>
         <div class="hero-actions" aria-label="Primary actions">
           <a class="button button-primary" href="#find-donors">Find Blood Donors</a>
           <a class="button button-secondary" href="#dashboards">Donate Blood</a>
@@ -82,7 +89,8 @@
       <div class="section-heading reveal">
         <p class="eyebrow">Built for urgent care</p>
         <h2>A connected response layer for every blood request</h2>
-        <p>BloodConnect gives communities one trusted place to discover donors, coordinate camps, monitor hospital stock, and activate emergency help.</p>
+        <p>BloodConnect gives communities one trusted place to discover donors, coordinate camps, monitor hospital
+          stock, and activate emergency help.</p>
       </div>
       <div class="about-grid">
         <article class="glass-panel reveal">
@@ -109,12 +117,30 @@
         <h2>Everything needed from discovery to donation</h2>
       </div>
       <div class="feature-grid">
-        <article class="feature-card reveal"><span>⌁</span><h3>Real-time donor discovery</h3><p>Search eligible nearby donors by blood group, distance, and last donation date.</p></article>
-        <article class="feature-card reveal"><span>⌖</span><h3>Nearby donation camps</h3><p>Find scheduled camps with live seat availability, organizer contacts, and navigation.</p></article>
-        <article class="feature-card reveal"><span>▣</span><h3>Hospital stock monitoring</h3><p>Track blood units, shortages, and pending requests across connected hospitals.</p></article>
-        <article class="feature-card reveal"><span>!</span><h3>Emergency SOS alerts</h3><p>Broadcast urgent needs to high-match donors with location and contact verification.</p></article>
-        <article class="feature-card reveal"><span>✓</span><h3>Eligibility reminders</h3><p>Donation readiness, health checklist prompts, and personalized reminders.</p></article>
-        <article class="feature-card reveal"><span>◆</span><h3>Verified donor profiles</h3><p>Trust badges, ID status, contribution history, and hospital-confirmed donations.</p></article>
+        <article class="feature-card reveal"><span>⌁</span>
+          <h3>Real-time donor discovery</h3>
+          <p>Search eligible nearby donors by blood group, distance, and last donation date.</p>
+        </article>
+        <article class="feature-card reveal"><span>⌖</span>
+          <h3>Nearby donation camps</h3>
+          <p>Find scheduled camps with live seat availability, organizer contacts, and navigation.</p>
+        </article>
+        <article class="feature-card reveal"><span>▣</span>
+          <h3>Hospital stock monitoring</h3>
+          <p>Track blood units, shortages, and pending requests across connected hospitals.</p>
+        </article>
+        <article class="feature-card reveal"><span>!</span>
+          <h3>Emergency SOS alerts</h3>
+          <p>Broadcast urgent needs to high-match donors with location and contact verification.</p>
+        </article>
+        <article class="feature-card reveal"><span>✓</span>
+          <h3>Eligibility reminders</h3>
+          <p>Donation readiness, health checklist prompts, and personalized reminders.</p>
+        </article>
+        <article class="feature-card reveal"><span>◆</span>
+          <h3>Verified donor profiles</h3>
+          <p>Trust badges, ID status, contribution history, and hospital-confirmed donations.</p>
+        </article>
       </div>
     </section>
 
@@ -128,12 +154,21 @@
         <div class="finder-controls">
           <label>Blood Group
             <select id="bloodGroup">
-              <option>O+</option><option>A+</option><option>B+</option><option>AB+</option><option>O-</option><option>A-</option><option>B-</option><option>AB-</option>
+              <option>O+</option>
+              <option>A+</option>
+              <option>B+</option>
+              <option>AB+</option>
+              <option>O-</option>
+              <option>A-</option>
+              <option>B-</option>
+              <option>AB-</option>
             </select>
           </label>
           <label>Urgency
             <select id="urgency">
-              <option>Emergency</option><option>Today</option><option>This week</option>
+              <option>Emergency</option>
+              <option>Today</option>
+              <option>This week</option>
             </select>
           </label>
           <button class="button button-primary" id="matchButton" type="button">Search Matches</button>
@@ -170,10 +205,22 @@
         <h2>Four steps from request to response</h2>
       </div>
       <div class="steps">
-        <article class="step reveal"><span>1</span><h3>Register</h3><p>Join as a donor, patient, hospital, or camp organizer.</p></article>
-        <article class="step reveal"><span>2</span><h3>Search</h3><p>Check nearby donors, hospital stock, and camp availability.</p></article>
-        <article class="step reveal"><span>3</span><h3>Connect</h3><p>Use verified calls, SMS, and location-based routing.</p></article>
-        <article class="step reveal"><span>4</span><h3>Save lives</h3><p>Track completion and reward every successful donation.</p></article>
+        <article class="step reveal"><span>1</span>
+          <h3>Register</h3>
+          <p>Join as a donor, patient, hospital, or camp organizer.</p>
+        </article>
+        <article class="step reveal"><span>2</span>
+          <h3>Search</h3>
+          <p>Check nearby donors, hospital stock, and camp availability.</p>
+        </article>
+        <article class="step reveal"><span>3</span>
+          <h3>Connect</h3>
+          <p>Use verified calls, SMS, and location-based routing.</p>
+        </article>
+        <article class="step reveal"><span>4</span>
+          <h3>Save lives</h3>
+          <p>Track completion and reward every successful donation.</p>
+        </article>
       </div>
     </section>
 
@@ -189,7 +236,8 @@
         <div>
           <p class="eyebrow">SOS Emergency Mode</p>
           <h2>One-click priority blood request</h2>
-          <p>Trigger location-based matching, notify nearby eligible donors, and share verified hospital details instantly.</p>
+          <p>Trigger location-based matching, notify nearby eligible donors, and share verified hospital details
+            instantly.</p>
           <div class="sos-actions">
             <button class="button button-emergency" id="sosButton" type="button">Activate SOS</button>
             <button class="button button-secondary" id="voiceButton" type="button">Voice Assist</button>
@@ -223,9 +271,18 @@
         <h2>Celebrate contribution without losing clinical clarity</h2>
       </div>
       <div class="reward-grid">
-        <article class="reward-card reveal"><span>🎖</span><h3>Badges</h3><p>Life Saver, Emergency Hero, Rural Champion, and Milestone Donor.</p></article>
-        <article class="reward-card reveal"><span>🏆</span><h3>Leaderboard</h3><p>Top donors ranked by verified contributions and response reliability.</p></article>
-        <article class="reward-card reveal"><span>✅</span><h3>Health Checklist</h3><p>Age, weight, hemoglobin, interval, and wellness checks before every donation.</p></article>
+        <article class="reward-card reveal"><span>🎖</span>
+          <h3>Badges</h3>
+          <p>Life Saver, Emergency Hero, Rural Champion, and Milestone Donor.</p>
+        </article>
+        <article class="reward-card reveal"><span>🏆</span>
+          <h3>Leaderboard</h3>
+          <p>Top donors ranked by verified contributions and response reliability.</p>
+        </article>
+        <article class="reward-card reveal"><span>✅</span>
+          <h3>Health Checklist</h3>
+          <p>Age, weight, hemoglobin, interval, and wellness checks before every donation.</p>
+        </article>
       </div>
     </section>
 
@@ -235,16 +292,27 @@
         <h2>Coordinate a request or launch a camp</h2>
         <form id="contactForm">
           <label>Name <input type="text" id="contactName" placeholder="Your name" required /></label>
-          <label>Email or Phone <input type="text" id="contactInfo" placeholder="contact@example.com" required /></label>
+          <label>Email or Phone <input type="text" id="contactInfo" placeholder="contact@example.com"
+              required /></label>
           <label>Message <textarea id="contactMessage" placeholder="Tell us what you need" required></textarea></label>
           <button class="button button-primary" type="submit">Send Message</button>
         </form>
       </div>
       <div class="faq-card reveal" id="faqs">
         <p class="eyebrow">FAQs</p>
-        <details open><summary>How are donors verified?</summary><p>Profiles can include ID status, health checklist completion, last donation date, and hospital-confirmed donation history.</p></details>
-        <details><summary>Can rural users receive alerts?</summary><p>Yes. BloodConnect includes SMS-based alerts and voice-assisted access for low-connectivity areas.</p></details>
-        <details><summary>Can hospitals manage stock?</summary><p>Hospitals can update blood units, manage requests, create drives, and review analytics.</p></details>
+        <details open>
+          <summary>How are donors verified?</summary>
+          <p>Profiles can include ID status, health checklist completion, last donation date, and hospital-confirmed
+            donation history.</p>
+        </details>
+        <details>
+          <summary>Can rural users receive alerts?</summary>
+          <p>Yes. BloodConnect includes SMS-based alerts and voice-assisted access for low-connectivity areas.</p>
+        </details>
+        <details>
+          <summary>Can hospitals manage stock?</summary>
+          <p>Hospitals can update blood units, manage requests, create drives, and review analytics.</p>
+        </details>
       </div>
     </section>
   </main>
@@ -285,14 +353,29 @@
           <label>Blood Group
             <select id="regBloodGroup">
               <option value="">Select (donors/patients)</option>
-              <option>O+</option><option>A+</option><option>B+</option><option>AB+</option>
-              <option>O-</option><option>A-</option><option>B-</option><option>AB-</option>
+              <option>O+</option>
+              <option>A+</option>
+              <option>B+</option>
+              <option>AB+</option>
+              <option>O-</option>
+              <option>A-</option>
+              <option>B-</option>
+              <option>AB-</option>
             </select>
           </label>
-          <label>Phone <input type="tel" id="regPhone" placeholder="+91 98765 43210" /></label>
+          <label>Phone <input type="tel" id="regPhone" placeholder="+91 98765 43210" pattern="^\+?[\d\s-]{10,}$"
+              title="Please enter a valid phone number (at least 10 digits)" /></label>
         </div>
         <label>Email <input type="email" id="authEmail" placeholder="you@example.com" required /></label>
-        <label>Password <input type="password" id="authPassword" placeholder="••••••••" required minlength="6" /></label>
+        <label>Password <input type="password" id="authPassword" placeholder="••••••••" required minlength="6"
+            title="Password must be at least 6 characters" /></label>
+        <div class="auth-extra" id="loginExtra">
+          <button type="button" class="link-button" id="forgotPasswordBtn">Forgot password?</button>
+        </div>
+        <div class="reset-fields hidden" id="resetFields">
+          <label>New Password <input type="password" id="newPassword" placeholder="••••••••" minlength="6" /></label>
+          <p class="reset-hint">Enter your email and a new password to reset.</p>
+        </div>
         <button class="button button-primary full-width" type="submit" id="authSubmit">Log In</button>
       </form>
       <p class="demo-hint">Demo: priya@bloodconnect.in / password123</p>
@@ -303,7 +386,8 @@
     <div class="modal modal-wide">
       <button class="modal-close" type="button" id="closeVerifyModal" aria-label="Close">×</button>
       <h2 id="verifyModalTitle">AI Donor Verification</h2>
-      <p class="modal-sub">Our AI engine validates identity documents, health metrics, and donation eligibility in seconds.</p>
+      <p class="modal-sub">Our AI engine validates identity documents, health metrics, and donation eligibility in
+        seconds.</p>
       <form id="verifyForm">
         <div class="verify-grid">
           <label>ID Document Type
@@ -328,9 +412,12 @@
       </div>
     </div>
   </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
+    integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <script src="script.js"></script>
 </body>
+
 </html>

@@ -1,4 +1,34 @@
-const API = "/api";
+/* ── Mock Backend Database (localStorage) ── */
+const MockDB = {
+  get(key) {
+    return JSON.parse(localStorage.getItem(`bc_${key}`) || "[]");
+  },
+  set(key, data) {
+    localStorage.setItem(`bc_${key}`, JSON.stringify(data));
+  },
+  init() {
+    if (!localStorage.getItem("bc_initialized")) {
+      this.seed();
+      localStorage.setItem("bc_initialized", "true");
+    }
+  },
+  seed() {
+    const users = [
+      { id: 1, name: "Aarav Sharma", email: "aarav@bloodconnect.in", password: "password123", phone: "+91 98765 43210", role: "donor", bloodGroup: "O+", verified: true, score: 98, status: "approved", donations: 12, badges: 5, points: 2450, lastDonation: "2025-03-15" },
+      { id: 2, name: "Meera Iyer", email: "meera@bloodconnect.in", password: "password123", phone: "+91 98765 43211", role: "donor", bloodGroup: "A+", verified: true, score: 94, status: "approved", donations: 9, badges: 4, points: 1980, lastDonation: "2025-04-20" },
+      { id: 3, name: "Priya Nair", email: "priya@bloodconnect.in", password: "password123", phone: "+91 98765 43214", role: "donor", bloodGroup: "B+", verified: true, score: 96, status: "approved", donations: 12, badges: 5, points: 2450, lastDonation: "2025-03-28" },
+      { id: 4, name: "Metro Care Admin", email: "hospital@bloodconnect.in", password: "password123", role: "hospital", phone: "+91 90000 11112", verified: true }
+    ];
+    this.set("users", users);
+    this.set("camps", [
+      { id: 1, name: "Govt. School Camp", location: "Sarojini Nagar, New Delhi", date: "2026-06-11", time: "10:00 AM", seatsTotal: 120, seatsRegistered: 78, smsEnabled: true },
+      { id: 2, name: "Anganwadi Health Drive", location: "Okhla Phase 2, New Delhi", date: "2026-06-12", time: "09:00 AM", seatsTotal: 50, seatsRegistered: 32, smsEnabled: true },
+      { id: 3, name: "City Hospital Mega Drive", location: "Metro Care Blood Bank", date: "2026-06-14", time: "08:00 AM", seatsTotal: 200, seatsRegistered: 142, smsEnabled: true }
+    ]);
+  }
+};
+
+MockDB.init();
 
 const state = {
   token: localStorage.getItem("bloodconnect-token"),
@@ -9,15 +39,96 @@ const state = {
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
+/* ── API Mock ── */
 async function api(path, options = {}) {
-  const headers = { "Content-Type": "application/json", ...options.headers };
-  if (state.token) headers.Authorization = `Bearer ${state.token}`;
+  // Simulate network delay
+  await new Promise(r => setTimeout(r, 400));
 
-  const res = await fetch(`${API}${path}`, { ...options, headers });
-  const data = await res.json().catch(() => ({}));
+  const body = options.body ? JSON.parse(options.body) : {};
+  const users = MockDB.get("users");
 
-  if (!res.ok) throw new Error(data.error || "Request failed");
-  return data;
+  if (path === "/auth/login") {
+    const user = users.find(u => u.email === body.email && u.password === body.password);
+    if (!user) throw new Error("Invalid email or password");
+    return { token: "mock_token_" + user.id, user };
+  }
+
+  if (path === "/auth/me") {
+    const userId = parseInt(state.token.replace("mock_token_", ""), 10);
+    const user = users.find(u => u.id === userId);
+    if (!user) throw new Error("Session expired");
+    return { user };
+  }
+
+  if (path === "/auth/register") {
+    if (users.some(u => u.email === body.email)) throw new Error("Email already registered");
+    const newUser = { ...body, id: Date.now(), verified: false, score: 0, status: "pending", donations: 0, badges: 0, points: 0 };
+    users.push(newUser);
+    MockDB.set("users", users);
+    return { token: "mock_token_" + newUser.id, user: newUser };
+  }
+
+  if (path === "/auth/verify") {
+    const userIndex = users.findIndex(u => u.id === state.user.id);
+    if (userIndex === -1) throw new Error("User not found");
+
+    // Simulate AI Verification Logic
+    const score = Math.floor(Math.random() * 20) + 80; // 80-100
+    const verification = {
+      score,
+      status: "approved",
+      aiSummary: "ID document matched and health metrics within safe donation range.",
+      checks: [
+        { name: "Identity Match", pass: true, detail: "Document photo matches profile name." },
+        { name: "Age Verification", pass: true, detail: "Donor age is within 18-65 range." },
+        { name: "Eligibility Interval", pass: true, detail: "No recent donations within 90 days." }
+      ]
+    };
+
+    users[userIndex] = { ...users[userIndex], ...verification, verified: true };
+    MockDB.set("users", users);
+    return { verification, user: users[userIndex] };
+  }
+
+  if (path.startsWith("/donors/search")) {
+    const params = new URLSearchParams(path.split("?")[1]);
+    const bg = params.get("bloodGroup");
+    const matches = users.filter(u => u.role === "donor" && (!bg || u.bloodGroup === bg)).map(u => ({
+      ...u,
+      distance: (Math.random() * 5 + 0.5).toFixed(1) + " km",
+      score: u.score + "%"
+    }));
+    return { matches };
+  }
+
+  if (path === "/camps") {
+    return { camps: MockDB.get("camps") };
+  }
+
+  if (path === "/stats") {
+    return { registeredDonors: 48210, livesSaved: 12654, activeCamps: 318, bloodUnitsAvailable: 8942 };
+  }
+
+  if (path.startsWith("/contact/dashboard/")) {
+    const role = path.split("/").pop();
+    const u = state.user;
+    if (!u) throw new Error("Not logged in");
+
+    // Generate dashboard data based on user type
+    if (role === "donor") {
+      return {
+        title: "Donor Dashboard",
+        profile: `${u.name} · ${u.bloodGroup}`,
+        subtitle: u.verified ? "Verified Donor · Eligible to donate" : "Account active · Complete AI verification",
+        metrics: [["Donations", u.donations || 0], ["Badges", u.badges || 0], ["Nearby requests", "5"], ["Reward points", (u.points || 0).toLocaleString()]],
+        cards: [["Eligibility Status", u.verified ? "Ready to donate." : "Pending verification.", u.verified ? 100 : 30], ["Contribution", "Your donations have helped save lives.", 60]]
+      };
+    }
+    // Simple fallbacks for other roles in this mock
+    return { title: role.charAt(0).toUpperCase() + role.slice(1) + " Dashboard", profile: u.name, subtitle: "Dashboard active", metrics: [["Activity", "High"], ["Status", "Live"]], cards: [["Overview", "System checking...", 80]] };
+  }
+
+  throw new Error(`API route not found: ${path}`);
 }
 
 function toast(message, type = "info") {
@@ -136,6 +247,14 @@ $("#authForm").addEventListener("submit", async (e) => {
   const email = $("#authEmail").value.trim();
   const password = $("#authPassword").value;
 
+  // Common Validations
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return toast("Please enter a valid email address", "error");
+  }
+  if (password.length < 6) {
+    return toast("Password must be at least 6 characters", "error");
+  }
+
   try {
     if (authMode === "login") {
       const { token, user } = await api("/auth/login", {
@@ -146,15 +265,18 @@ $("#authForm").addEventListener("submit", async (e) => {
       closeModal("#authModal");
       toast(`Welcome back, ${user.name}!`, "success");
     } else {
-      const body = {
-        name: $("#regName").value.trim(),
-        email,
-        password,
-        role: $("#regRole").value,
-        bloodGroup: $("#regBloodGroup").value || null,
-        phone: $("#regPhone").value.trim() || null
-      };
-      if (!body.name) return toast("Please enter your name", "error");
+      const name = $("#regName").value.trim();
+      const phone = $("#regPhone").value.trim();
+      const role = $("#regRole").value;
+      const bloodGroup = $("#regBloodGroup").value || null;
+
+      // Registration Validations
+      if (name.length < 2) return toast("Please enter your full name", "error");
+      if (!/^\+?[\d\s-]{10,}$/.test(phone)) {
+        return toast("Please enter a valid phone number", "error");
+      }
+
+      const body = { name, email, password, role, bloodGroup, phone };
 
       const { token, user } = await api("/auth/register", {
         method: "POST",
@@ -407,10 +529,10 @@ async function renderDashboard(role) {
 
 function getFallbackDashboard(role) {
   const fallbacks = {
-    donor: { title: "Donor Dashboard", profile: "Guest · —", subtitle: "Log in to see your profile", metrics: [["Donations","—"],["Badges","—"],["Nearby requests","—"],["Reward points","—"]], cards: [["Eligibility","Log in and verify.",20],["History","—",10]] },
-    patient: { title: "Patient Dashboard", profile: "Guest", subtitle: "Log in to create requests", metrics: [["Nearby donors","5"],["Hospitals","2"],["Response ETA","—"],["Status","Idle"]], cards: [["Search Blood","Use the finder above.",50],["Track Request","—",20]] },
-    hospital: { title: "Hospital Dashboard", profile: "Metro Care Blood Bank", subtitle: "Demo view", metrics: [["O+ Units","46"],["B+ Units","31"],["Critical groups","2"],["Drives active","3"]], cards: [["Manage Requests","Approve emergency cases.",78],["Analytics","Monitor trends.",64]] },
-    camp: { title: "Camp Organizer Dashboard", profile: "Community Mega Drive", subtitle: "Demo view", metrics: [["Registrations","142"],["Checked in","88"],["SMS sent","1,920"],["Units target","120"]], cards: [["Manage Camps","Create drives.",82],["Location Sharing","Share routes.",70]] }
+    donor: { title: "Donor Dashboard", profile: "Guest · —", subtitle: "Log in to see your profile", metrics: [["Donations", "—"], ["Badges", "—"], ["Nearby requests", "—"], ["Reward points", "—"]], cards: [["Eligibility", "Log in and verify.", 20], ["History", "—", 10]] },
+    patient: { title: "Patient Dashboard", profile: "Guest", subtitle: "Log in to create requests", metrics: [["Nearby donors", "5"], ["Hospitals", "2"], ["Response ETA", "—"], ["Status", "Idle"]], cards: [["Search Blood", "Use the finder above.", 50], ["Track Request", "—", 20]] },
+    hospital: { title: "Hospital Dashboard", profile: "Metro Care Blood Bank", subtitle: "Demo view", metrics: [["O+ Units", "46"], ["B+ Units", "31"], ["Critical groups", "2"], ["Drives active", "3"]], cards: [["Manage Requests", "Approve emergency cases.", 78], ["Analytics", "Monitor trends.", 64]] },
+    camp: { title: "Camp Organizer Dashboard", profile: "Community Mega Drive", subtitle: "Demo view", metrics: [["Registrations", "142"], ["Checked in", "88"], ["SMS sent", "1,920"], ["Units target", "120"]], cards: [["Manage Camps", "Create drives.", 82], ["Location Sharing", "Share routes.", 70]] }
   };
   return fallbacks[role];
 }
@@ -450,9 +572,9 @@ async function loadStats() {
     $$("[data-count]").forEach((el) => {
       el.dataset.count = stats[
         el.nextElementSibling?.textContent.includes("Donors") ? "registeredDonors"
-        : el.nextElementSibling?.textContent.includes("Saved") ? "livesSaved"
-        : el.nextElementSibling?.textContent.includes("Camps") ? "activeCamps"
-        : "bloodUnitsAvailable"
+          : el.nextElementSibling?.textContent.includes("Saved") ? "livesSaved"
+            : el.nextElementSibling?.textContent.includes("Camps") ? "activeCamps"
+              : "bloodUnitsAvailable"
       ];
     });
   } catch { /* use defaults */ }
@@ -494,7 +616,7 @@ $$("[data-count]").forEach((n) => statObserver.observe(n));
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(
     (pos) => { state.coords = { lat: pos.coords.latitude, lng: pos.coords.longitude }; },
-    () => {}
+    () => { }
   );
 }
 
@@ -531,11 +653,10 @@ tl.from("#logo", {
 });
 tl.from(".nav-actions button", {
   opacity: 0,
-  
   stagger: 0.1,
   ease: "power1.inOut",
 })
-tl.from(".nav-links h5",{
+tl.from(".nav-links h5", {
   opacity: 0,
   y: -100,
   stagger: 0.1,
@@ -543,7 +664,7 @@ tl.from(".nav-links h5",{
 })
 tl.from("#logotext", {
   opacity: 0,
-  y:" 50%",
+  y: " 50%",
   stagger: 0.1,
   ease: "power1.inOut",
 })
